@@ -14,8 +14,17 @@
     "main": [
       {
         "adapter": "kotlin",
-        "value": "griglog.relt.RELT"
+        "value": "griglog.relt.RELT::commonInit"
       }
+    ],
+    "client": [
+      {
+        "adapter": "kotlin",
+        "value": "griglog.relt.RELT::clientInit"
+      }
+    ],
+    "rei_client": [
+      "griglog.relt.ReltPlugin"
     ]
   },
   "mixins": [

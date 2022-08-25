@@ -1,1 +1,4 @@
 accessWidener	v1	named
+
+accessible field net/minecraft/world/level/storage/loot/LootTables tables Ljava/util/Map;
+accessible field net/minecraft/world/level/storage/loot/LootTables GSON Lcom/google/gson/Gson;
