@@ -23,13 +23,11 @@ fun recieveLootTables(compressed: ByteArray){
     }
     val json = JsonParser.parseString(String(bytes))
     clientTables.clear()
-    for (obj in json.asJsonArray){
-        (obj as JsonObject).entrySet().forEach{(key, value) ->
-        //foreach only called once
+    json.asJsonObject.entrySet().forEach {(key, value) ->
         val rl = ResourceLocation(key)
         val table = LootTables.GSON.fromJson(value, LootTable::class.java)
-        clientTables.put(rl, table) }
+        clientTables.put(rl, table)
     }
     val t2 = System.nanoTime()
-    RELT.logger.info("Recieved and decompressed ${json.asJsonArray.size()} loot tables (${bytes.size} bytes). Took ${(t2 - t1) / 1000000} ms.")
+    RELT.logger.info("Recieved and decompressed ${clientTables.size} loot tables (${bytes.size} bytes). Took ${(t2 - t1) / 1000000} ms.")
 }

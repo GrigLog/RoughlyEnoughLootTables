@@ -2,3 +2,9 @@ accessWidener	v1	named
 
 accessible field net/minecraft/world/level/storage/loot/LootTables tables Ljava/util/Map;
 accessible field net/minecraft/world/level/storage/loot/LootTables GSON Lcom/google/gson/Gson;
+
+accessible field net/minecraft/world/level/storage/loot/entries/LootPoolSingletonContainer functions [Lnet/minecraft/world/level/storage/loot/functions/LootItemFunction;
+accessible field net/minecraft/world/level/storage/loot/entries/LootItem item Lnet/minecraft/world/item/Item;
+accessible field net/minecraft/world/level/storage/loot/functions/SetNbtFunction tag Lnet/minecraft/nbt/CompoundTag;
+accessible field net/minecraft/world/level/storage/loot/functions/EnchantRandomlyFunction enchantments Ljava/util/List;
+accessible field net/minecraft/world/level/storage/loot/functions/SetPotionFunction potion Lnet/minecraft/world/item/alchemy/Potion;

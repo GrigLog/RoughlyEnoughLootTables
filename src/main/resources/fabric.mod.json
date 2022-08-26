@@ -8,7 +8,7 @@
     "GrigLog"
   ],
   "license": "MIT",
-  "icon": "",
+  "icon": "assets/roughly_enough_loot_tables/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
@@ -24,7 +24,7 @@
       }
     ],
     "rei_client": [
-      "griglog.relt.ReltPlugin"
+      "griglog.relt.rei_plugin.ReltPlugin"
     ]
   },
   "mixins": [
