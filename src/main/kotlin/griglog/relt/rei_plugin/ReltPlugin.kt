@@ -1,5 +1,7 @@
 package griglog.relt.rei_plugin
 
+import griglog.relt.table_resolving.ItemLike
+import griglog.relt.table_resolving.collectItems
 import griglog.relt.table_storage.clientTables
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry
@@ -14,10 +16,10 @@ import net.minecraft.world.item.FishingRodItem
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.alchemy.PotionUtils
-import net.minecraft.world.level.storage.loot.BuiltInLootTables
 import net.minecraft.world.level.storage.loot.LootTable
 import net.minecraft.world.level.storage.loot.entries.LootItem
 import net.minecraft.world.level.storage.loot.functions.EnchantRandomlyFunction
+import net.minecraft.world.level.storage.loot.functions.EnchantWithLevelsFunction
 import net.minecraft.world.level.storage.loot.functions.SetNbtFunction
 import net.minecraft.world.level.storage.loot.functions.SetPotionFunction
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets
@@ -42,34 +44,4 @@ fun getInputs(name: ResourceLocation, table: LootTable): EntryIngredient?{
     if (table.paramSet == LootContextParamSets.CHEST)
         return EntryIngredients.of(ItemStack(Items.CHEST))
     return null
-}
-
-
-fun LootTable.collectItems(): Collection<ItemLike> {
-    val items = mutableListOf<ItemLike>()
-    pools.forEach { pool ->
-        pool.entries
-            .filter { it is LootItem }
-            .forEach itemLoop@{ entry ->
-                val lootItem = entry as LootItem
-                if (lootItem.item == Items.AIR)
-                    return@itemLoop
-                val item = ItemLike(lootItem.item)
-                lootItem.functions.forEach { function ->
-                    when (function) {
-                        is SetNbtFunction -> item.applyAll { it.tag = function.tag }
-                        is EnchantRandomlyFunction -> {
-                            if (function.enchantments.isNotEmpty())
-                                item.enchant(function.enchantments)
-                            else item.enchant(Registry.ENCHANTMENT.filter {
-                                it.isDiscoverable && (lootItem.item is BookItem || it.canEnchant(item.variants[0]))
-                            })
-                        }
-                        is SetPotionFunction -> item.applyAll { PotionUtils.setPotion(it, function.potion) }
-                    }
-                    items.add(item)
-                }
-            }
-    }
-    return items
 }

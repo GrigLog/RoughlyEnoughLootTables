@@ -38,7 +38,7 @@ class BarteringCategory : DisplayCategory<TableDisplay> {
         val widgets = mutableListOf<Widget>()
 
         widgets.add(Widgets.createLabel(Point(center.x, bounds.y),
-            TextComponent(display.name.toString()))
+            TextComponent(display.displayLocation.get().toString()))
             .noShadow()
             .color(0x666666))
 
@@ -55,7 +55,7 @@ class BarteringCategory : DisplayCategory<TableDisplay> {
         widgets.add(ScrollableSlotsWidget(outBounds, display.outputEntries))
 
         widgets.add(Widgets.createButton(Rectangle(bounds.maxX + 2, bounds.maxY - 30, 10, 10), TextComponent("J"))
-            .onClick { button -> openTableJson(display.name)})
+            .onClick { button -> openTableJson(display.displayLocation.get())})
 
         return widgets
     }
