@@ -2,6 +2,7 @@ package griglog.relt.rei_plugin
 
 import com.mojang.blaze3d.vertex.PoseStack
 import griglog.relt.RELT
+import griglog.relt.table_storage.openTableJson
 import me.shedaniel.clothconfig2.ClothConfigInitializer
 import me.shedaniel.clothconfig2.api.scroll.ScrollingContainer
 import me.shedaniel.math.Point
@@ -52,6 +53,9 @@ class BarteringCategory : DisplayCategory<TableDisplay> {
         val outBounds = Rectangle(bounds.x, bounds.y + 30, bounds.width, bounds.height - 30)
         widgets.add(Widgets.createSlotBase(outBounds))
         widgets.add(ScrollableSlotsWidget(outBounds, display.outputEntries))
+
+        widgets.add(Widgets.createButton(Rectangle(bounds.maxX + 2, bounds.maxY - 30, 10, 10), TextComponent("J"))
+            .onClick { button -> openTableJson(display.name)})
 
         return widgets
     }

@@ -22,6 +22,7 @@ object RELT{
             val bytes = buf.readByteArray()
             client.execute { recieveLootTables(bytes) }
         }
+        System.setProperty("java.awt.headless", "false")
     }
 
     fun serverInit(){

@@ -1,4 +1,4 @@
-package griglog.relt
+package griglog.relt.rei_plugin
 
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
@@ -14,7 +14,8 @@ class ItemLike{
         var newVariants = mutableListOf<ItemStack>()
         enchants.forEach{ench ->
             variants.forEach {
-                newVariants.add(it.copy().apply{enchant(ench, 1)})
+                for (lvl in ench.minLevel..ench.maxLevel)
+                newVariants.add(it.copy().apply{enchant(ench, lvl)})
             }
         }
         variants = newVariants
