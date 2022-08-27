@@ -1,42 +1,62 @@
 package griglog.relt.table_resolving
 
-import griglog.relt.wrapHoverName
+import griglog.relt.rei_plugin.TableEntryDef
+import me.shedaniel.rei.api.common.entry.EntryStack
 import net.minecraft.core.Registry
-import net.minecraft.world.item.BookItem
+import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.alchemy.PotionUtils
 import net.minecraft.world.level.storage.loot.LootTable
+import net.minecraft.world.level.storage.loot.entries.CompositeEntryBase
 import net.minecraft.world.level.storage.loot.entries.LootItem
+import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer
+import net.minecraft.world.level.storage.loot.entries.LootTableReference
+import net.minecraft.world.level.storage.loot.entries.TagEntry
 import net.minecraft.world.level.storage.loot.functions.*
 
 
-fun LootTable.collectItems(): Collection<ItemLike> {
+fun LootTable.resolve(): Pair<Collection<ItemLike>, Collection<EntryStack<ResourceLocation>>> {
     val items = hashSetOf<ItemLike>()
-    pools.forEach { pool ->
-        pool.entries
-            .filter { it is LootItem }
-            .forEach itemLoop@{ entry ->
-                val lootItem = entry as LootItem
-                if (lootItem.item == Items.AIR)
-                    return@itemLoop
-                val item = ItemLike(lootItem.item)
-                lootItem.functions.forEach { function ->
-                    when (function) {
-                        is SetNbtFunction -> item.stack.tag = function.tag
-                        is EnchantRandomlyFunction -> {
-                            if (function.enchantments.isNotEmpty())
-                                item.enchantRandom(function.enchantments)
-                            else item.enchantRandom()
-                        }
-                        is EnchantWithLevelsFunction -> item.enchantWithLevels()
-                        is SetPotionFunction -> PotionUtils.setPotion(item.stack, function.potion)
-                        is ExplorationMapFunction -> wrapHoverName(item.stack)
-                        //is SetContainerContents
-                        //is SmeltItemFunction
-                    }
-                }
-                items.add(item)
-            }
+    val tables = hashSetOf<EntryStack<ResourceLocation>>()
+    for (pool in pools){
+        for (entry in pool.entries) {
+            resolveEntry(entry, items, tables)
+        }
     }
-    return items
+    return Pair(items, tables)
+}
+
+fun resolveEntry(entry: LootPoolEntryContainer, items: MutableSet<ItemLike>, tables: MutableSet<EntryStack<ResourceLocation>>){
+    when(entry){
+        is LootItem -> resolveItem(entry.item, entry.functions)?.let{items.add(it)}
+        is LootTableReference -> tables.add(EntryStack.of(TableEntryDef.type, entry.name))
+        is TagEntry -> Registry.ITEM.getTagOrEmpty(entry.tag).forEach{item ->
+            resolveItem(item.value(), entry.functions)?.let{items.add(it)}
+        }
+        is CompositeEntryBase -> entry.children.forEach{resolveEntry(it, items, tables)}
+    }
+}
+
+fun resolveItem(lootItem: Item, functions: Array<LootItemFunction>): ItemLike?{
+    if (lootItem == Items.AIR)
+        return null //I hope no modder will ever do this but better safe than sorry
+    val item = ItemLike(lootItem)
+    functions.forEach { function ->
+        when (function) {
+            is SetNbtFunction -> item.stack.tag = function.tag
+            is EnchantRandomlyFunction -> {
+                if (function.enchantments.isNotEmpty())
+                    item.enchantRandom(function.enchantments)
+                else item.enchantRandom()
+            }
+
+            is EnchantWithLevelsFunction -> item.enchantWithLevels()
+            is SetPotionFunction -> PotionUtils.setPotion(item.stack, function.potion)
+            is ExplorationMapFunction -> item.writeMap()
+            //is SetContainerContents
+            //is SmeltItemFunction
+        }
+    }
+    return item
 }

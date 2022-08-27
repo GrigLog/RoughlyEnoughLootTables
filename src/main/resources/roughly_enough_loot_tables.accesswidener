@@ -15,3 +15,7 @@ accessible field net/minecraft/world/level/storage/loot/providers/number/Constan
 accessible field net/minecraft/world/level/storage/loot/providers/number/BinomialDistributionGenerator n Lnet/minecraft/world/level/storage/loot/providers/number/NumberProvider;
 accessible field net/minecraft/world/level/storage/loot/functions/EnchantWithLevelsFunction levels Lnet/minecraft/world/level/storage/loot/providers/number/NumberProvider;
 accessible field net/minecraft/world/level/storage/loot/functions/EnchantWithLevelsFunction treasure Z
+
+accessible field net/minecraft/world/level/storage/loot/entries/LootTableReference name Lnet/minecraft/resources/ResourceLocation;
+accessible field net/minecraft/world/level/storage/loot/entries/TagEntry tag Lnet/minecraft/tags/TagKey;
+accessible field net/minecraft/world/level/storage/loot/entries/CompositeEntryBase children [Lnet/minecraft/world/level/storage/loot/entries/LootPoolEntryContainer;

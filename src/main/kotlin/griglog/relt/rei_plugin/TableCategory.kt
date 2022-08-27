@@ -51,6 +51,7 @@ class TableCategory : DisplayCategory<TableDisplay> {
         widgets.add(ScrollableSlotsWidget(outBounds, display.outputEntries))
 
         widgets.add(Widgets.createButton(Rectangle(bounds.maxX + 2, bounds.maxY - 30, 10, 10), TextComponent("J"))
+            .tooltipLine(TranslatableComponent(RELT.id + ".json_button"))
             .onClick { button -> openTableJson(display.displayLocation.get())})
 
         return widgets

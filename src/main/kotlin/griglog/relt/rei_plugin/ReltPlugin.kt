@@ -1,6 +1,6 @@
 package griglog.relt.rei_plugin
 
-import griglog.relt.table_resolving.collectItems
+import griglog.relt.table_resolving.resolve
 import griglog.relt.table_storage.clientTables
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry
@@ -26,7 +26,8 @@ class ReltClient : REIClientPlugin {
 
     override fun registerDisplays(registry: DisplayRegistry) {
         clientTables.forEach{(name, table) ->
-            registry.add(TableDisplay(name, table.collectItems(), getInputs(name, table)))
+            val (items, tables) = table.resolve()
+            registry.add(TableDisplay(name, items, tables, getInputs(name, table)))
         }
     }
 }

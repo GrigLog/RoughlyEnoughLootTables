@@ -27,6 +27,7 @@ fun tryUpdateLootTables(server: MinecraftServer) {
         //RELT.logger.info(json)
     }
     val str = obj.toString()
+    //RELT.logger.info(str)
     ByteArrayOutputStream().use {
         GZIPOutputStream(it).apply { write(str.toByteArray()); close() }
         serverTablesCache = it.toByteArray()

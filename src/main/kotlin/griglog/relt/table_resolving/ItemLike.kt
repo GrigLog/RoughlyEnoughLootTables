@@ -9,6 +9,7 @@ import net.minecraft.world.item.EnchantedBookItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import net.minecraft.world.item.MapItem
 import net.minecraft.world.item.enchantment.Enchantment
 import net.minecraft.world.item.enchantment.EnchantmentHelper
 import net.minecraft.world.level.block.entity.BlockEntity
@@ -23,23 +24,36 @@ private val allDiscoverableEnchants = enchSet().apply{
     }
 }
 
+//todo: in case of poor performance, cache Registry.Item.getId(stack.item)
 class ItemLike{
     constructor(item: Item){
         stack = ItemStack(item)
     }
-    val stack: ItemStack
+    var stack: ItemStack
     private var enchantments = enchSet()
 
     fun enchantWithLevels(){ //TODO: smartass implementation???
+        tryEnchantedBook()
         wrapHoverName(stack)
     }
 
     fun enchantRandom(enchants: Collection<Enchantment>){
+        tryEnchantedBook()
         enchantments.addAll(enchants)
     }
 
     fun enchantRandom(){
+        tryEnchantedBook()
         enchantments = allDiscoverableEnchants
+    }
+
+    fun tryEnchantedBook(){
+        if (stack.item is BookItem) stack = ItemStack(Items.ENCHANTED_BOOK).apply{tag = stack.tag}
+    }
+
+    fun writeMap(){
+        if (stack.item is MapItem) stack = ItemStack(Items.FILLED_MAP).apply{tag = stack.tag}
+        wrapHoverName(stack)
     }
 
     fun genStacks(): Collection<ItemStack>{
