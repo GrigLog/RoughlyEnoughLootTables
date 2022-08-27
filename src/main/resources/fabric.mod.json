@@ -24,7 +24,10 @@
       }
     ],
     "rei_client": [
-      "griglog.relt.rei_plugin.ReltPlugin"
+      "griglog.relt.rei_plugin.ReltClient"
+    ],
+    "rei_common": [
+        "griglog.relt.rei_plugin.ReltServer"
     ]
   },
   "mixins": [

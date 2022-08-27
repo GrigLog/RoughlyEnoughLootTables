@@ -23,8 +23,8 @@ fun tryUpdateLootTables(server: MinecraftServer) {
             return@forEach
         val json = LootTables.GSON.toJsonTree(table)
         obj.add(rl.toString(), json)
-        RELT.logger.info(rl)
-        RELT.logger.info(json)
+        //RELT.logger.info(rl)
+        //RELT.logger.info(json)
     }
     val str = obj.toString()
     ByteArrayOutputStream().use {

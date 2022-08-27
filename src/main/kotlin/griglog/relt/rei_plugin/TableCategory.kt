@@ -15,6 +15,7 @@ import me.shedaniel.rei.api.client.gui.widgets.Widgets
 import me.shedaniel.rei.api.client.registry.display.DisplayCategory
 import me.shedaniel.rei.api.common.category.CategoryIdentifier
 import me.shedaniel.rei.api.common.entry.EntryIngredient
+import me.shedaniel.rei.api.common.entry.EntryStack
 import net.minecraft.client.gui.components.events.GuiEventListener
 import net.minecraft.network.chat.TextComponent
 import net.minecraft.network.chat.TranslatableComponent
@@ -22,12 +23,12 @@ import net.minecraft.util.Mth
 
 val categoryId: CategoryIdentifier<TableDisplay> = CategoryIdentifier.of(RELT.id, "plugin")
 
-class BarteringCategory : DisplayCategory<TableDisplay> {
+class TableCategory : DisplayCategory<TableDisplay> {
     override fun getCategoryIdentifier() = categoryId
 
     override fun getTitle() = TranslatableComponent(RELT.id + ".category")
 
-    override fun getIcon() = TableEntry()
+    override fun getIcon() = EntryStack.of(TableEntryDef.type, TableEntryDef.rootId)
 
     override fun getDisplayHeight() = 150
 
@@ -37,18 +38,13 @@ class BarteringCategory : DisplayCategory<TableDisplay> {
         val center = Point(bounds.centerX, bounds.centerY)
         val widgets = mutableListOf<Widget>()
 
-        widgets.add(Widgets.createLabel(Point(center.x, bounds.y),
-            TextComponent(display.displayLocation.get().toString()))
-            .noShadow()
-            .color(0x666666))
-
         val hasInputs = display.inputEntries.size == 2
         if (hasInputs) {
-            widgets.add(Widgets.createSlot(Point(center.x+1, bounds.y + 10))
+            widgets.add(Widgets.createSlot(Point(center.x - 20, bounds.y + 10))
                 .entries(display.inputEntries[1]).markInput())
         }
-        widgets.add(Widgets.createSlot(Point(center.x + if (hasInputs) -20 else -10, bounds.y + 10))
-            .entries(tableEntry))
+        widgets.add(Widgets.createSlot(Point(center.x + if (hasInputs) 0 else -10, bounds.y + 10))
+            .entries(display.inputEntries[0]))
 
         val outBounds = Rectangle(bounds.x, bounds.y + 30, bounds.width, bounds.height - 30)
         widgets.add(Widgets.createSlotBase(outBounds))
