@@ -12,34 +12,27 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      {
-        "adapter": "kotlin",
-        "value": "griglog.relt.RELT::commonInit"
-      }
+      "griglog.relt.entry_points.ReltCommon"
     ],
     "client": [
-      {
-        "adapter": "kotlin",
-        "value": "griglog.relt.RELT::clientInit"
-      }
+      "griglog.relt.entry_points.ReltClient"
     ],
     "rei_client": [
       "griglog.relt.rei_plugin.ReltClient"
     ],
     "rei_common": [
-        "griglog.relt.rei_plugin.ReltServer"
+      "griglog.relt.rei_plugin.ReltServer"
     ]
   },
-  "mixins": [
-    "roughly_enough_loot_tables.mixins.json"
-  ],
   "accessWidener" : "roughly_enough_loot_tables.accesswidener",
   "depends": {
     "java": ">=17",
     "minecraft": ">=1.18.2",
     "fabricloader": ">=0.14.8",
     "fabric": "*",
-    "fabric-language-kotlin": ">=1.8.1+kotlin.1.7.10",
+    "fabric-language-kotlin": ">=1.8.1+kotlin.1.7.10"
+  },
+  "suggests": {
     "roughlyenoughitems": ">=8.3.519"
   }
 }
