@@ -5,6 +5,8 @@ import griglog.relt.table_storage.recieveLootTables
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
+import java.awt.Desktop
+import java.awt.GraphicsEnvironment
 
 class ReltClient : ClientModInitializer {
     override fun onInitializeClient() {
@@ -12,6 +14,6 @@ class ReltClient : ClientModInitializer {
             val bytes = buf.readByteArray()
             client.execute { recieveLootTables(bytes) }
         }
-        System.setProperty("java.awt.headless", "false")
+        System.setProperty("java.awt.headless", "false") //it does not help if something else calls GraphicsEnvironment.isHeadless() first
     }
 }
