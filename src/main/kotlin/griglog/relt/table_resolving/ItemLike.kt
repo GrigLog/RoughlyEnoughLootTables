@@ -58,7 +58,7 @@ class ItemLike{
 
     fun genStacks(): Collection<ItemStack>{
         if (enchantments.size == 0)
-            return listOf(stack)
+            return listOf(stack) //todo: cache these?
         val res = mutableListOf<ItemStack>()
         if (stack.item is BookItem || stack.item is EnchantedBookItem){
             for (ench in enchantments){

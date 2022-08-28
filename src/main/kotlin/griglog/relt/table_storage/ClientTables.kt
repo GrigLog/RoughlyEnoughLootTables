@@ -43,8 +43,11 @@ fun openTableJson(name: ResourceLocation){
         try {
             if (SystemUtils.IS_OS_WINDOWS)
                 Runtime.getRuntime().exec(arrayOf("rundll32", "url.dll,FileProtocolHandler", temp.absolutePath))
-            else if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_UNIX)
+            else if (SystemUtils.IS_OS_MAC)
                 Runtime.getRuntime().exec(arrayOf("/usr/bin/open", temp.absolutePath))
+            else if (SystemUtils.IS_OS_LINUX){
+                Runtime.getRuntime().exec(arrayOf("xdg-open", temp.absolutePath))
+            }
             else {
                 RELT.logger.error("Unknown operating system. Please report to the mod author.")
                 RELT.logger.info("Anyways, here is your loot table:\n" + json.toString())
