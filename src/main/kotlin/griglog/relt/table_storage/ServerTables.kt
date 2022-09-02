@@ -2,13 +2,8 @@ package griglog.relt.table_storage
 
 import com.google.gson.JsonObject
 import griglog.relt.RELT
-import net.minecraft.core.Registry
 import net.minecraft.server.MinecraftServer
-import net.minecraft.world.item.Items
-import net.minecraft.world.level.storage.loot.LootPool
-import net.minecraft.world.level.storage.loot.LootTable
 import net.minecraft.world.level.storage.loot.LootTables
-import net.minecraft.world.level.storage.loot.entries.LootItem
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets.*
 import org.apache.commons.lang3.ArrayUtils

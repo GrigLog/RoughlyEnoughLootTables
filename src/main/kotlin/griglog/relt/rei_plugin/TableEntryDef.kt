@@ -17,7 +17,6 @@ import me.shedaniel.rei.api.common.util.EntryIngredients
 import net.minecraft.client.gui.GuiComponent
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
-import net.minecraft.network.chat.TextComponent
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.TagKey
 import java.util.stream.Stream
@@ -47,7 +46,7 @@ class TableEntryDef: EntryDefinition<ResourceLocation>{
 
 
     override fun asFormattedText(entry: EntryStack<ResourceLocation>, value: ResourceLocation): Component {
-        return TextComponent("formatted.$value")
+        return Component.literal("formatted.$value")
     }
 
     override fun hash(entry: EntryStack<ResourceLocation>, value: ResourceLocation, context: ComparisonContext): Long =
@@ -95,7 +94,7 @@ class TableEntryDef: EntryDefinition<ResourceLocation>{
         }
 
         override fun getTooltip(estack: EntryStack<ResourceLocation>, context: TooltipContext): Tooltip? =
-            if (estack.value != rootId) Tooltip.create(TextComponent(estack.value.toString())) else null
+            if (estack.value != rootId) Tooltip.create(Component.literal(estack.value.toString())) else null
     }
 }
 

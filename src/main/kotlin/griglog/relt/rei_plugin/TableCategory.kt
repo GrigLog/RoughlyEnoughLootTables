@@ -17,8 +17,7 @@ import me.shedaniel.rei.api.common.category.CategoryIdentifier
 import me.shedaniel.rei.api.common.entry.EntryIngredient
 import me.shedaniel.rei.api.common.entry.EntryStack
 import net.minecraft.client.gui.components.events.GuiEventListener
-import net.minecraft.network.chat.TextComponent
-import net.minecraft.network.chat.TranslatableComponent
+import net.minecraft.network.chat.Component
 import net.minecraft.util.Mth
 
 val categoryId: CategoryIdentifier<TableDisplay> = CategoryIdentifier.of(RELT.id, "plugin")
@@ -26,7 +25,7 @@ val categoryId: CategoryIdentifier<TableDisplay> = CategoryIdentifier.of(RELT.id
 class TableCategory : DisplayCategory<TableDisplay> {
     override fun getCategoryIdentifier() = categoryId
 
-    override fun getTitle() = TranslatableComponent(RELT.id + ".category")
+    override fun getTitle() = Component.translatable(RELT.id + ".category")
 
     override fun getIcon() = EntryStack.of(TableEntryDef.type, TableEntryDef.rootId)
 
@@ -50,8 +49,8 @@ class TableCategory : DisplayCategory<TableDisplay> {
         widgets.add(Widgets.createSlotBase(outBounds))
         widgets.add(ScrollableSlotsWidget(outBounds, display.outputEntries))
 
-        widgets.add(Widgets.createButton(Rectangle(bounds.maxX + 2, bounds.maxY - 30, 10, 10), TextComponent("J"))
-            .tooltipLine(TranslatableComponent(RELT.id + ".json_button"))
+        widgets.add(Widgets.createButton(Rectangle(bounds.maxX + 2, bounds.maxY - 30, 10, 10), Component.literal("J"))
+            .tooltipLine(Component.translatable(RELT.id + ".json_button"))
             .onClick { button -> openTableJson(display.displayLocation.get())})
 
         return widgets
