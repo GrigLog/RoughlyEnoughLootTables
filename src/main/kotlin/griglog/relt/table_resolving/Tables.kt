@@ -51,7 +51,7 @@ fun resolveItem(lootItem: Item, functions: Array<LootItemFunction>): ItemLike?{
                 else item.enchantRandom()
             }
 
-            is EnchantWithLevelsFunction -> item.enchantWithLevels()
+            is EnchantWithLevelsFunction -> item.enchantWithLevels(function.levels, function.treasure)
             is SetPotionFunction -> PotionUtils.setPotion(item.stack, function.potion)
             is ExplorationMapFunction -> item.writeMap()
             //is SetContainerContents

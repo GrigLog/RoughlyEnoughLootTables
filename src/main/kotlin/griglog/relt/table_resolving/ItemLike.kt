@@ -1,26 +1,25 @@
 package griglog.relt.table_resolving
 
-import griglog.relt.RELT
 import griglog.relt.wrapHoverName
 import net.minecraft.core.Registry
-import net.minecraft.nbt.NbtUtils
-import net.minecraft.world.item.BookItem
-import net.minecraft.world.item.EnchantedBookItem
-import net.minecraft.world.item.Item
-import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.Items
-import net.minecraft.world.item.MapItem
+import net.minecraft.world.item.*
 import net.minecraft.world.item.enchantment.Enchantment
 import net.minecraft.world.item.enchantment.EnchantmentHelper
-import net.minecraft.world.level.block.entity.BlockEntity
+import net.minecraft.world.item.enchantment.EnchantmentInstance
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider
 import java.util.*
 
-private fun enchSet() = TreeSet<Enchantment>(Comparator.comparingInt{ench -> Registry.ENCHANTMENT.getId(ench)})
+private fun enchSet() = TreeSet<EnchantmentInstance> { a, b ->
+    if (a.enchantment != b.enchantment)
+        Registry.ENCHANTMENT.getId(a.enchantment).compareTo(Registry.ENCHANTMENT.getId(b.enchantment))
+    else
+        a.level.compareTo(b.level)
+}
 
 private val allDiscoverableEnchants = enchSet().apply{
     for (ench in Registry.ENCHANTMENT.filter{it.isDiscoverable}){
-        add(ench)
+        for (lvl in ench.minLevel..ench.maxLevel)
+            add(EnchantmentInstance(ench, lvl))
     }
 }
 
@@ -32,14 +31,38 @@ class ItemLike{
     var stack: ItemStack
     private var enchantments = enchSet()
 
-    fun enchantWithLevels(){ //TODO: smartass implementation???
+    fun enchantWithLevels(levels: NumberProvider, treasure: Boolean){
+        val lvls = resolveNumber(levels)
+        var minPoints = lvls.start
+        var maxPoints = lvls.endInclusive
+        minPoints += 1
+        maxPoints += 3 + (stack.item.enchantmentValue / 4f).toInt() * 2
+        minPoints = (minPoints * 0.85f).toInt()
+        maxPoints = (maxPoints * 1.15f).toInt()
+        if (minPoints <= 0) minPoints = 1
+        if (maxPoints <= 0) maxPoints = 1
+
+        for (ench in Registry.ENCHANTMENT){
+            if ((ench.isTreasureOnly && !treasure)
+                || !ench.isDiscoverable
+                || (stack.item != Items.BOOK && !ench.category.canEnchant(stack.item)))
+                continue
+            for (lvl in ench.minLevel..ench.maxLevel){
+                if (ench.getMaxCost(lvl) < minPoints || ench.getMinCost(lvl) > maxPoints)
+                    continue
+                enchantments.add(EnchantmentInstance(ench, lvl))
+            }
+        }
         tryEnchantedBook()
-        wrapHoverName(stack)
+        //wrapHoverName(stack)
     }
 
     fun enchantRandom(enchants: Collection<Enchantment>){
         tryEnchantedBook()
-        enchantments.addAll(enchants)
+        for (ench in enchants){
+            for (lvl in ench.minLevel..ench.maxLevel)
+                enchantments.add(EnchantmentInstance(ench, lvl))
+        }
     }
 
     fun enchantRandom(){
@@ -60,21 +83,10 @@ class ItemLike{
         if (enchantments.size == 0)
             return listOf(stack) //todo: cache these?
         val res = mutableListOf<ItemStack>()
-        if (stack.item is BookItem || stack.item is EnchantedBookItem){
-            for (ench in enchantments){
-                for (lvl in ench.minLevel..ench.maxLevel){
-                    res.add(ItemStack(Items.ENCHANTED_BOOK).apply{enchant(ench, lvl)})
-                }
-            }
-        }
-        else {
-            for (ench in enchantments){
-                if (!ench.canEnchant(stack))
-                    continue
-                for (lvl in ench.minLevel..ench.maxLevel){
-                    res.add(stack.copy().apply{enchant(ench, lvl)})
-                }
-            }
+        for (pair in enchantments){
+            if (stack.item != Items.ENCHANTED_BOOK && !pair.enchantment.canEnchant(stack))
+                continue
+            res.add(stack.copy().apply{enchant(pair.enchantment, pair.level)})
         }
         return res
     }
