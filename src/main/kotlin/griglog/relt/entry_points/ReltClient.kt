@@ -3,10 +3,7 @@ package griglog.relt.entry_points
 import griglog.relt.RELT
 import griglog.relt.table_storage.recieveLootTables
 import net.fabricmc.api.ClientModInitializer
-import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
-import java.awt.Desktop
-import java.awt.GraphicsEnvironment
 
 class ReltClient : ClientModInitializer {
     override fun onInitializeClient() {

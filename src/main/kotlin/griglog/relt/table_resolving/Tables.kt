@@ -2,17 +2,13 @@ package griglog.relt.table_resolving
 
 import griglog.relt.rei_plugin.TableEntryDef
 import me.shedaniel.rei.api.common.entry.EntryStack
-import net.minecraft.core.Registry
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.alchemy.PotionUtils
 import net.minecraft.world.level.storage.loot.LootTable
-import net.minecraft.world.level.storage.loot.entries.CompositeEntryBase
-import net.minecraft.world.level.storage.loot.entries.LootItem
-import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer
-import net.minecraft.world.level.storage.loot.entries.LootTableReference
-import net.minecraft.world.level.storage.loot.entries.TagEntry
+import net.minecraft.world.level.storage.loot.entries.*
 import net.minecraft.world.level.storage.loot.functions.*
 
 
@@ -31,7 +27,7 @@ fun resolveEntry(entry: LootPoolEntryContainer, items: MutableSet<ItemLike>, tab
     when(entry){
         is LootItem -> resolveItem(entry.item, entry.functions)?.let{items.add(it)}
         is LootTableReference -> tables.add(EntryStack.of(TableEntryDef.type, entry.name))
-        is TagEntry -> Registry.ITEM.getTagOrEmpty(entry.tag).forEach{item ->
+        is TagEntry -> BuiltInRegistries.ITEM.getTagOrEmpty(entry.tag).forEach{ item ->
             resolveItem(item.value(), entry.functions)?.let{items.add(it)}
         }
         is CompositeEntryBase -> entry.children.forEach{resolveEntry(it, items, tables)}

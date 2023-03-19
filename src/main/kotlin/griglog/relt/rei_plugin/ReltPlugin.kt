@@ -9,7 +9,7 @@ import me.shedaniel.rei.api.common.entry.EntryIngredient
 import me.shedaniel.rei.api.common.entry.type.EntryTypeRegistry
 import me.shedaniel.rei.api.common.plugins.REIServerPlugin
 import me.shedaniel.rei.api.common.util.EntryIngredients
-import net.minecraft.core.Registry
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.ItemTags
 import net.minecraft.world.item.FishingRodItem
@@ -42,7 +42,7 @@ fun getInputs(name: ResourceLocation, table: LootTable): EntryIngredient?{
     if (table.paramSet == LootContextParamSets.PIGLIN_BARTER)
         return EntryIngredients.ofItemTag(ItemTags.PIGLIN_LOVED)
     if (table.paramSet == LootContextParamSets.FISHING)
-        return EntryIngredients.ofItemStacks(Registry.ITEM.filter{it is FishingRodItem}.map{ItemStack(it)})
+        return EntryIngredients.ofItemStacks(BuiltInRegistries.ITEM.filter{it is FishingRodItem}.map{ItemStack(it)})
     if (table.paramSet == LootContextParamSets.CHEST)
         return EntryIngredients.of(ItemStack(Items.CHEST))
     return null
