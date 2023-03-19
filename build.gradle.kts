@@ -1,6 +1,7 @@
 val modVersion: String by project
 val mavenGroup: String by project
 val minecraftVersion: String by project
+val parchmentVersion: String by project
 val yarnMappings: String by project
 val loaderVersion: String by project
 val fabricVersion: String by project
@@ -41,7 +42,7 @@ dependencies {
     //mappings("net.fabricmc", "yarn", yarnMappings, null, "v2")
     mappings(loom.layered() {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-1.18.2:2022.08.21@zip")
+        parchment("org.parchmentmc.data:parchment-${minecraftVersion}:${parchmentVersion}@zip")
     })
 
     modImplementation("net.fabricmc:fabric-loader:${loaderVersion}")
