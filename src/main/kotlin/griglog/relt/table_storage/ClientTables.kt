@@ -5,6 +5,7 @@ import griglog.relt.RELT
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.storage.loot.LootTable
 import net.minecraft.world.level.storage.loot.LootTables
+import net.minecraft.world.level.storage.loot.entries.LootPoolEntry
 import org.apache.commons.lang3.SystemUtils
 import java.awt.Desktop
 import java.io.ByteArrayInputStream
@@ -21,9 +22,13 @@ fun recieveLootTables(compressed: ByteArray){
     val json = JsonParser.parseString(String(bytes))
     clientTables.clear()
     json.asJsonObject.entrySet().forEach {(key, value) ->
-        val rl = ResourceLocation(key)
-        val table = LootTables.GSON.fromJson(value, LootTable::class.java)
-        clientTables.put(rl, table)
+        try {
+            val rl = ResourceLocation(key)
+            val table = LootTables.GSON.fromJson(value, LootTable::class.java)
+            clientTables.put(rl, table)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
     val t2 = System.nanoTime()
     RELT.logger.info("Recieved and decompressed ${clientTables.size} loot tables (${bytes.size} bytes). Took ${(t2 - t1) / 1000000} ms.")
