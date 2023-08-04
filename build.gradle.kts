@@ -55,7 +55,7 @@ dependencies {
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:$reiVersion")
     modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:$reiVersion")
 
-    modRuntimeOnly("curse.maven:modmenu-308702:3789482")
+    //modRuntimeOnly("curse.maven:modmenu-308702:3789482")
 }
 
 
