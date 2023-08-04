@@ -1,29 +1,28 @@
 package griglog.relt.table_resolving
 
 import griglog.relt.wrapHoverName
-import net.minecraft.core.Registry
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.world.item.*
 import net.minecraft.world.item.enchantment.Enchantment
-import net.minecraft.world.item.enchantment.EnchantmentHelper
 import net.minecraft.world.item.enchantment.EnchantmentInstance
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider
 import java.util.*
 
 private fun enchSet() = TreeSet<EnchantmentInstance> { a, b ->
     if (a.enchantment != b.enchantment)
-        Registry.ENCHANTMENT.getId(a.enchantment).compareTo(Registry.ENCHANTMENT.getId(b.enchantment))
+        BuiltInRegistries.ENCHANTMENT.getId(a.enchantment).compareTo(BuiltInRegistries.ENCHANTMENT.getId(b.enchantment))
     else
         a.level.compareTo(b.level)
 }
 
 private val allDiscoverableEnchants = enchSet().apply{
-    for (ench in Registry.ENCHANTMENT.filter{it.isDiscoverable}){
+    for (ench in BuiltInRegistries.ENCHANTMENT.filter{it.isDiscoverable}){
         for (lvl in ench.minLevel..ench.maxLevel)
             add(EnchantmentInstance(ench, lvl))
     }
 }
 
-//todo: in case of poor performance, cache Registry.Item.getId(stack.item)
+//todo: in case of poor performance, cache BuiltInRegistries.Item.getId(stack.item)
 class ItemLike{
     constructor(item: Item){
         stack = ItemStack(item)
@@ -42,7 +41,7 @@ class ItemLike{
         if (minPoints <= 0) minPoints = 1
         if (maxPoints <= 0) maxPoints = 1
 
-        for (ench in Registry.ENCHANTMENT){
+        for (ench in BuiltInRegistries.ENCHANTMENT){
             if ((ench.isTreasureOnly && !treasure)
                 || !ench.isDiscoverable
                 || (stack.item != Items.BOOK && !ench.category.canEnchant(stack.item)))

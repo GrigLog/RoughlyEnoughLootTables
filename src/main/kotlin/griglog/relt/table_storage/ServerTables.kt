@@ -27,7 +27,7 @@ fun tryUpdateLootTables(server: MinecraftServer) {
     /*
     for (i in 0..50) {
         val test: LootTable = LootTable.lootTable().pool(LootPool.lootPool().also {
-            for (item in Registry.ITEM) {
+            for (item in BuiltInRegistries.ITEM) {
                 it.with(LootItem.lootTableItem(item).build())
             }
         }.build()).build()
