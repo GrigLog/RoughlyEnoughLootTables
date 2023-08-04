@@ -17,20 +17,21 @@ fun LootTable.resolve(): Pair<Collection<ItemLike>, Collection<EntryStack<Resour
     val tables = hashSetOf<EntryStack<ResourceLocation>>()
     for (pool in pools){
         for (entry in pool.entries) {
-            resolveEntry(entry, items, tables)
+            resolveEntry(entry, items, tables, pool.functions)
         }
     }
     return Pair(items, tables)
 }
 
-fun resolveEntry(entry: LootPoolEntryContainer, items: MutableSet<ItemLike>, tables: MutableSet<EntryStack<ResourceLocation>>){
+fun resolveEntry(entry: LootPoolEntryContainer, items: MutableSet<ItemLike>,
+                 tables: MutableSet<EntryStack<ResourceLocation>>, poolFunctions: Array<LootItemFunction>){
     when(entry){
-        is LootItem -> resolveItem(entry.item, entry.functions)?.let{items.add(it)}
+        is LootItem -> resolveItem(entry.item, entry.functions + poolFunctions)?.let{items.add(it)}
         is LootTableReference -> tables.add(EntryStack.of(TableEntryDef.type, entry.name))
         is TagEntry -> BuiltInRegistries.ITEM.getTagOrEmpty(entry.tag).forEach{ item ->
-            resolveItem(item.value(), entry.functions)?.let{items.add(it)}
+            resolveItem(item.value(), entry.functions + poolFunctions)?.let{items.add(it)}
         }
-        is CompositeEntryBase -> entry.children.forEach{resolveEntry(it, items, tables)}
+        is CompositeEntryBase -> entry.children.forEach{resolveEntry(it, items, tables, poolFunctions)}
     }
 }
 
