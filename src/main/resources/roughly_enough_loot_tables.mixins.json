@@ -1,0 +1,20 @@
+{
+  "required": true,
+  "package": "griglog.relt.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "CombinedEntryAccessor",
+    "EnchantRandomlyLootFunctionAccessor",
+    "EnchantWithlevelsLootFunctionAccessor",
+    "ItemEntryAccessor",
+    "LeafEntryAccessor",
+    "LootTableAccessor",
+    "LootTableEntryAccessor",
+    "SetComponentsLootFunctionAccessor",
+    "SetPotionLootFunctionAccessor",
+    "TagEntryAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

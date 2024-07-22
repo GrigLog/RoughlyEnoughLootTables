@@ -10,12 +10,14 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 
-class ReltCommon : ModInitializer{
+class ReltCommon : ModInitializer {
+
     override fun onInitialize() {
-        PayloadTypeRegistry.playS2C().register(CompressedTablesPayload.TYPE, CompressedTablesPayload.CODEC);
-        ServerLifecycleEvents.SERVER_STARTING.register{ server -> onReloadOrServerStart() }
-        ServerLifecycleEvents.END_DATA_PACK_RELOAD.register{ server, rm, success -> onReloadOrServerStart() }
-        ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register{ player, joined ->
+        PayloadTypeRegistry.playS2C().register(CompressedTablesPayload.TYPE, CompressedTablesPayload.CODEC)
+
+        ServerLifecycleEvents.SERVER_STARTING.register { onReloadOrServerStart() }
+        ServerLifecycleEvents.END_DATA_PACK_RELOAD.register { _, _, _ -> onReloadOrServerStart() }
+        ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register { player, _ ->
             tryUpdateLootTables(player.server)
             ServerPlayNetworking.send(player, CompressedTablesPayload(serverTablesCache))
         }

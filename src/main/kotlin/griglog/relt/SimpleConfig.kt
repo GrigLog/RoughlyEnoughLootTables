@@ -1,6 +1,5 @@
 package griglog.relt
 
-import jdk.internal.org.jline.utils.Colors.s
 import net.fabricmc.loader.api.FabricLoader
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
@@ -11,9 +10,9 @@ import java.nio.file.Files
 import java.util.*
 
 //Based on https://github.com/magistermaks/fabric-simplelibs/tree/master/simple-config
-class SimpleConfig {
-    private val request: ConfigRequest
+class SimpleConfig private constructor(private val request: ConfigRequest) {
     private val config = HashMap<String, String>()
+
     /**
      * If any error occurred during loading or reading from the config
      * a 'broken' flag is set, indicating that the config's state
@@ -21,10 +20,9 @@ class SimpleConfig {
      *
      * @return the 'broken' flag of the configuration
      */
-    var isBroken: Boolean = false
+    private var isBroken: Boolean = false
 
-    private constructor(request: ConfigRequest) {
-        this.request = request
+    init {
         val identifier = "Config '" + request.filename + "'"
 
         if (!request.file.exists()) {
@@ -54,7 +52,7 @@ class SimpleConfig {
         fun get(namespace: String): String
     }
 
-    class ConfigRequest(val file: File, val filename: String, var provider: DefaultConfig = DefaultConfig {""}) {
+    class ConfigRequest(val file: File, val filename: String, var provider: DefaultConfig = DefaultConfig { "" }) {
 
         /**
          * Sets the default config provider, used to generate the
@@ -84,7 +82,6 @@ class SimpleConfig {
         }
     }
 
-    @Throws(IOException::class)
     private fun createConfig() {
         // try creating missing files
 
@@ -97,7 +94,6 @@ class SimpleConfig {
         writer.close()
     }
 
-    @Throws(IOException::class)
     private fun loadConfig() {
         val reader = Scanner(request.file)
         var line = 1
@@ -109,7 +105,7 @@ class SimpleConfig {
     }
 
     private fun parseConfigEntry(entry: String, line: Int) {
-        if (!entry.isEmpty() && !entry.startsWith("#")) {
+        if (entry.isNotEmpty() && !entry.startsWith("#")) {
             val parts = entry.split("=".toRegex(), limit = 2).toTypedArray()
             if (parts.size == 2) {
                 config[parts[0]] = parts[1]

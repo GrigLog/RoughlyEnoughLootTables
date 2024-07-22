@@ -4,11 +4,12 @@ import com.google.gson.JsonObject
 import com.mojang.serialization.JsonOps
 import griglog.relt.RELT
 import griglog.relt.entry_points.ReltCommon
-import net.minecraft.core.registries.Registries
-import net.minecraft.resources.RegistryOps
-import net.minecraft.resources.ResourceKey
+import griglog.relt.mixin.LootTableAccessor
+import net.minecraft.loot.LootDataType
+import net.minecraft.registry.RegistryKey
+import net.minecraft.registry.RegistryKeys
+import net.minecraft.registry.RegistryOps
 import net.minecraft.server.MinecraftServer
-import net.minecraft.world.level.storage.loot.LootDataType
 import org.apache.commons.lang3.ArrayUtils
 import java.io.ByteArrayOutputStream
 import java.util.zip.GZIPOutputStream
@@ -17,31 +18,27 @@ var serverTablesCache: ByteArray = ArrayUtils.EMPTY_BYTE_ARRAY
 var serverCacheValid = true
 
 fun tryUpdateLootTables(server: MinecraftServer) {
-    if (serverCacheValid)
+    if (serverCacheValid) {
         return
-    val reloadableRegistries = server.reloadableRegistries()
+    }
+    val reloadableRegistries = server.reloadableRegistries
     val obj = JsonObject()
     val t1 = System.nanoTime()
-    reloadableRegistries.getKeys(Registries.LOOT_TABLE).forEach { rl ->
-        //todo: is it the correct way to make ResourceKey?
-        val table = reloadableRegistries.getLootTable(ResourceKey.create(Registries.LOOT_TABLE, rl))
-        if ((ReltCommon.config.skipEmptyTables && table.pools.isEmpty()) || table.paramSet in ReltCommon.config.skipTypes)
+    reloadableRegistries.getIds(RegistryKeys.LOOT_TABLE).forEach { rl ->
+        val table = reloadableRegistries.getLootTable(RegistryKey.of(RegistryKeys.LOOT_TABLE, rl))
+        if ((ReltCommon.config.skipEmptyTables && (table as LootTableAccessor).pools.isEmpty()) || table.type in ReltCommon.config.skipTypes) {
             return@forEach
-        val regOps = RegistryOps.create(JsonOps.INSTANCE, reloadableRegistries.get())
-        LootDataType.TABLE.codec.encodeStart(regOps, table).mapOrElse(
-            { json -> obj.add(rl.toString(), json) }, { error -> RELT.logger.error("Failed to serialize loot table $rl: $error") })
+        }
+
+        val regOps = RegistryOps.of(JsonOps.INSTANCE, server.registryManager)
+        LootDataType.LOOT_TABLES.codec.encodeStart(regOps, table).mapOrElse(
+            { json -> obj.add(rl.toString(), json) },
+            { error -> RELT.logger.error("Failed to serialize loot table $rl: $error") })
     }
-    /*
-    for (i in 0..50) {
-        val test: LootTable = LootTable.lootTable().pool(LootPool.lootPool().also {
-            for (item in BuiltInRegistries.ITEM) {
-                it.with(LootItem.lootTableItem(item).build())
-            }
-        }.build()).build()
-        obj.add(RELT.id + ":big_test" + i, LootTables.GSON.toJsonTree(test))
-    }*/
+
     val str = obj.toString().toByteArray()
-    var t2 = System.nanoTime()
+    val t2 = System.nanoTime()
+
     RELT.logger.info("Collected ${obj.size()} loot tables, ${str.size} bytes in total. Took ${(t2 - t1) / 1000000} ms.")
     val t3 = System.nanoTime()
     ByteArrayOutputStream().use {

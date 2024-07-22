@@ -9,7 +9,9 @@
 	],
 	"license": "MIT",
 	"icon": "assets/roughly_enough_loot_tables/icon.png",
-	"accessWidener" : "roughly_enough_loot_tables.accesswidener",
+	"mixins": [
+		"roughly_enough_loot_tables.mixins.json"
+	],
 	"environment": "*",
 	"entrypoints": {
 		"main": [
@@ -27,7 +29,7 @@
 	},
 	"depends": {
 		"fabricloader": ">=0.15.11",
-		"minecraft": "~1.20.6",
+		"minecraft": "~1.21",
 		"java": ">=21",
 		"fabric-api": "*",
 		"fabric-language-kotlin": "*"
